@@ -1,3 +1,9 @@
+call plug#begin('~/.vim/plugged')
+    Plug 'psf/black'
+    Plug 'scrooloose/nerdcommenter'
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+call plug#end()
+
 filetype off
 execute pathogen#infect()
 filetype plugin indent on
@@ -5,6 +11,24 @@ syntax on
 
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+autocmd BufWritePost *.py execute ':Black'
+
+au BufNewFile,BufRead *.py set foldmethod=indent
+nnoremap <space> za
+
+" use <c-space> for trigger completion
+inoremap <silent><expr> <TAB>
+    \ pumvisible() ? "\<C-n>" :
+    \ <SID>check_back_space() ? "\<TAB>" :
+    \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+nmap <leader>rn <Plug>(coc-rename)
+
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1] =~# '\s'
+endfunction
 
 map <C-n> :NERDTreeToggle<CR>
 
